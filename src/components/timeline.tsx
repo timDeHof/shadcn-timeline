@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import { cn } from "@/lib/utils";
 
 const Timeline = React.forwardRef<
@@ -65,17 +64,18 @@ const TimelineHeader = React.forwardRef<
 TimelineHeader.displayName = "TimelineHeader";
 
 const TimelineTitle = React.forwardRef<
-	HTMLParagraphElement,
+	HTMLHeadingElement,
 	React.HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => (
+>(({ className, children, ...props }, ref) => (
 	<h3
 		ref={ref}
 		className={cn(
 			"font-semibold leading-none tracking-tight text-secondary-foreground",
 			className,
 		)}
-		{...props}
-	/>
+		{...props}>
+		{children}
+	</h3>
 ));
 TimelineTitle.displayName = "CardTitle";
 
