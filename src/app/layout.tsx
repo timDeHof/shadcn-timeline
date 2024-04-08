@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
 	title: "Shadcn Timeline",
-	description: "Timeline components for Shadcn",
+	description: "Timeline component for Shadcn",
 };
 
 export const viewport = {
