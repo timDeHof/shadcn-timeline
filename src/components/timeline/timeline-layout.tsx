@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
 	Timeline,
@@ -9,7 +11,7 @@ import {
 	TimelineDescription,
 	TimelineContent,
 	TimelineTime,
-} from "@/components/timeline";
+} from "@/components/timeline/timeline";
 import { TimelineElement } from "@/app/data";
 
 interface TimelineLayoutProps {
