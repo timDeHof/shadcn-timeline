@@ -6,7 +6,7 @@ Customizable and re-usable timeline component for you to use in your projects.
 
 Built on top of shadcn.  
 
-<a href='#Preview'>Preview</a> <a href='#Usage'>Usage</a> <a href='#Installation'>Installation</a> <a href='#TechStack'>Tech Stack</a>
+<a href='#Preview'>Preview</a> <a href='#Usage'>Usage</a> <a href='#Installation'>Installation</a> <a href='#Tech Stack'>Tech Stack</a>
 </div>
 
 ## Preview
