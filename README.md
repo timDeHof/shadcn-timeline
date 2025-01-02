@@ -1,51 +1,131 @@
-<div align="center">
-  
-# shadcn-timeline
+# Shadcn Timeline Component
 
-Customizable and re-usable timeline component for you to use in your projects.
+A beautiful, accessible, and customizable timeline component built with React and Tailwind CSS.
 
-Built on top of shadcn.  
+## Demo & Documentation
 
-<a href='#Preview'>Preview</a> <a href='#Usage'>Usage</a> <a href='#Installation'>Installation</a> <a href='#Tech Stack'>Tech Stack</a>
-</div>
+🔗 [View Storybook Documentation](https://shadcn-timeline.vercel.app)
 
-## Preview
+## Features
 
-![shadcn_timeline_laptop](https://github.com/timDeHof/shadcn-timeline/assets/2568193/a710af62-36b6-4ea8-b8ba-130f913561dd)
-
-## Usage
-You can use the source code and copy paste components into your NextJS projects.
-These components in particular:
-
-```bash
-/src/app/components/timeline/timeline-layout.tsx & timeline.tsx
-```
+- 🎨 Customizable appearance with different sizes and colors
+- ♿️ Fully accessible with ARIA attributes
+- 🔄 Loading and error states
+- 🎭 Smooth animations with Framer Motion
+- 📱 Responsive design
+- 🎯 TypeScript support
+- 🌐 SSR Compatible
+- 📚 Full Storybook documentation and examples
 
 ## Installation
-If you'd like to spin up a local environment similar to the **demo**, follow these instructions:
-  
-1. Clone the repository to a directory on your pc via command prompt:
-     ```bash
-      git clone https://github.com/timDeHof/shadcn-timeline.git
-     ```
-2. Open the folder:
-    ```bash
-    cd shadcn-timeline
-    ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
-5. Go to [localhost](http://localhost:3000) and start playing around!
 
-## Tech stack
-[NextJS](https://nextjs.org/) - React Framework for the web
+```bash
+# Clone the repository
+git clone https://github.com/timDeHof/shadcn-timeline.git
 
-[TailwindCSS](https://tailwindcss.com/) - Utility-first CSS framework
+# Install dependencies
+npm install
 
-[shadcn-ui](https://ui.shadcn.com/) - UI component built using Radix UI and Tailwind CSS
+# Run Storybook locally
+npm run storybook
+```
 
+## Usage
+
+```tsx
+import { Timeline, TimelineItem } from '@/components/timeline'
+import { Check } from 'lucide-react'
+
+export default function Example() {
+  return (
+    <Timeline>
+      <TimelineItem
+        date={new Date("2024-01-01")}
+        title="Feature Released"
+        description="New timeline component is now available"
+        icon={<Check />}
+        status="completed"
+      />
+      <TimelineItem
+        date={new Date("2024-01-02")}
+        title="In Progress"
+        description="Working on documentation"
+        status="in-progress"
+      />
+      <TimelineItem
+        date={new Date("2024-01-03")}
+        title="Upcoming"
+        description="Planning future updates"
+        status="pending"
+      />
+    </Timeline>
+  )
+}
+```
+
+## Props
+
+### Timeline
+
+| Prop     | Type                | Default | Description           |
+|----------|--------------------|---------|-----------------------|
+| size     | 'sm' \| 'md' \| 'lg' | 'md'    | Size of the timeline |
+| iconsize | 'sm' \| 'md' \| 'lg' | 'md'    | Size of icons        |
+
+### TimelineItem
+
+| Prop           | Type                                        | Default     | Description                |
+|----------------|---------------------------------------------|-------------|----------------------------|
+| date          | Date \| string \| number                    | -           | Date of the event          |
+| title         | string                                      | -           | Title of the event         |
+| description   | string                                      | -           | Description of the event   |
+| icon          | ReactNode                                   | -           | Custom icon                |
+| iconColor     | 'primary' \| 'secondary' \| 'muted' \| 'accent' | 'primary'  | Color theme of the icon    |
+| status        | 'completed' \| 'in-progress' \| 'pending'    | 'completed' | Current status            |
+| loading       | boolean                                     | false       | Show loading state         |
+| error         | string                                      | -           | Show error state          |
+
+### TimelineTime
+
+| Prop           | Type                                   | Default     | Description                |
+|----------------|----------------------------------------|-------------|----------------------------|
+| date          | Date \| string \| number               | -           | Date to display            |
+| format        | string \| Intl.DateTimeFormatOptions   | -           | Date formatting options    |
+| className     | string                                 | -           | Additional CSS classes     |
+
+## Server-Side Rendering
+
+The component is fully SSR compatible and handles hydration properly. Date formatting is handled on the client side to prevent hydration mismatches.
+
+## License
+
+MIT
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## Development
+
+To run Storybook locally:
+
+```bash
+npm run storybook
+```
+
+This will start Storybook on http://localhost:6006
+
+## Testing
+
+Run the test suite:
+
+```bash
+# Run tests
+npm run test
+
+# Run Storybook tests
+npm run test-storybook
+
+# Run Storybook tests with coverage
+npm run test-storybook:coverage
+```
