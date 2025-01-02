@@ -1,24 +1,128 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
+import { motion, HTMLMotionProps } from "framer-motion";
 
-const Timeline = React.forwardRef<
-	HTMLOListElement,
-	React.HTMLAttributes<HTMLOListElement>
->(({ className, ...props }, ref) => (
-	<ol ref={ref} className={cn("flex flex-col", className)} {...props} />
-));
+const timelineVariants = cva("flex flex-col", {
+	variants: {
+		size: {
+			sm: "gap-4",
+			md: "gap-6",
+			lg: "gap-8",
+		},
+	},
+	defaultVariants: {
+		size: "md",
+	},
+});
+
+interface TimelineProps
+	extends React.HTMLAttributes<HTMLOListElement>,
+		VariantProps<typeof timelineVariants> {
+	iconsize?: "sm" | "md" | "lg";
+}
+
+const Timeline = React.forwardRef<HTMLOListElement, TimelineProps>(
+	({ className, iconsize, children, ...props }, ref) => (
+		<ol
+			ref={ref}
+			className={cn(
+				timelineVariants({ className }),
+				"flex min-h-80 w-full justify-center items-center",
+			)}
+			{...props}>
+			{React.Children.map(children, (child, index) => {
+				if (
+					React.isValidElement(child) &&
+					typeof child.type !== "string" &&
+					"displayName" in child.type &&
+					child.type.displayName === "TimelineItem"
+				) {
+					return React.cloneElement(child, {
+						iconsize,
+					} as any);
+				}
+				return child;
+			})}
+		</ol>
+	),
+);
 Timeline.displayName = "Timeline";
 
 const TimelineItem = React.forwardRef<
 	HTMLLIElement,
-	React.LiHTMLAttributes<HTMLLIElement>
->(({ className, ...props }, ref) => (
-	<li
-		ref={ref}
-		className={cn("relative flex flex-col p-6 pt-0 [&>*]:mb-3", className)}
-		{...props}
-	/>
-));
+	Omit<HTMLMotionProps<"li">, "ref"> & {
+		date?: string;
+		title?: string;
+		description?: string;
+		icon?: React.ReactNode;
+		iconColor?: "primary" | "secondary" | "muted" | "accent";
+		status?: "completed" | "in-progress" | "pending";
+		connectorColor?: "primary" | "secondary" | "muted" | "accent";
+		showConnector?: boolean;
+		iconsize?: "sm" | "md" | "lg";
+	}
+>(
+	(
+		{
+			className,
+			date,
+			title,
+			description,
+			icon,
+			iconColor,
+			status,
+			connectorColor,
+			showConnector = true,
+			iconsize,
+			...props
+		},
+		ref,
+	) => {
+		return (
+			<motion.li
+				ref={ref}
+				className={cn(
+					"relative",
+					"hover:bg-muted/50 rounded-lg transition-colors duration-200",
+					"w-fit",
+					className,
+				)}
+				{...props}>
+				<div className='grid grid-cols-[minmax(auto,8rem)_auto_1fr] items-start px-4'>
+					{/* Date */}
+					<TimelineTime className="text-right pr-4">{date}</TimelineTime>
+
+					{/* Timeline dot and connector */}
+					<div className='mx-3 flex flex-col h-full w-6 items-center justify-start gap-y-2'>
+						<TimelineIcon
+							icon={icon}
+							color={iconColor}
+							status={status}
+							iconSize={iconsize}
+						/>
+
+						{showConnector && (
+							<TimelineConnector
+								status={status}
+								color={connectorColor}
+								className='-translate-x-1/2 h-full'
+							/>
+						)}
+					</div>
+
+					{/* Content */}
+					<TimelineContent>
+						<TimelineHeader>
+							<TimelineTitle>{title}</TimelineTitle>
+						</TimelineHeader>
+						<TimelineDescription>{description}</TimelineDescription>
+					</TimelineContent>
+				</div>
+			</motion.li>
+		);
+	},
+);
 TimelineItem.displayName = "TimelineItem";
 
 const TimelineTime = React.forwardRef<
@@ -28,7 +132,7 @@ const TimelineTime = React.forwardRef<
 	<p
 		ref={ref}
 		className={cn(
-			"absolute translate-x-36 md:-translate-x-24 text-sm font-semibold leading-none text-secondary-foreground",
+			"text-sm font-medium tracking-tight text-muted-foreground",
 			className,
 		)}
 		{...props}
@@ -38,12 +142,23 @@ TimelineTime.displayName = "TimelineTime";
 
 const TimelineConnector = React.forwardRef<
 	HTMLDivElement,
-	React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+	React.HTMLAttributes<HTMLDivElement> & {
+		status?: "completed" | "in-progress" | "pending";
+		color?: "primary" | "secondary" | "muted" | "accent";
+	}
+>(({ className, status = "completed", color, ...props }, ref) => (
 	<div
 		ref={ref}
 		className={cn(
-			"absolute top-[5px] left-[30px] -translate-x-1/2 translate-y-2 h-full w-px bg-primary",
+			"w-0.5",
+			{
+				"bg-primary": color === "primary" || (!color && status === "completed"),
+				"bg-muted": color === "muted" || (!color && status === "pending"),
+				"bg-secondary": color === "secondary",
+				"bg-accent": color === "accent",
+				"bg-gradient-to-b from-primary to-muted":
+					!color && status === "in-progress",
+			},
 			className,
 		)}
 		{...props}
@@ -77,18 +192,53 @@ const TimelineTitle = React.forwardRef<
 		{children}
 	</h3>
 ));
-TimelineTitle.displayName = "CardTitle";
+TimelineTitle.displayName = "TimelineTitle";
 
 const TimelineIcon = React.forwardRef<
 	HTMLDivElement,
-	React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-	<div
-		ref={ref}
-		className={cn("flex flex-col size-3 bg-primary rounded-full", className)}
-		{...props}
-	/>
-));
+	React.HTMLAttributes<HTMLDivElement> & {
+		icon?: React.ReactNode;
+		color?: "primary" | "secondary" | "muted" | "accent";
+		status?: "completed" | "in-progress" | "pending";
+		iconSize?: "sm" | "md" | "lg";
+	}
+>(
+	(
+		{ className, icon, color, status = "completed", iconSize, ...props },
+		ref,
+	) => (
+		<div
+			ref={ref}
+			className={cn(
+				"relative flex items-center justify-center rounded-full",
+				"ring-8 ring-background aspect-square",
+				{
+					"bg-primary":
+						(!color && status === "completed") || color === "primary",
+					"bg-muted": (!color && status === "pending") || color === "muted",
+					"bg-secondary": color === "secondary",
+					"bg-accent": color === "accent",
+					"h-6 w-6": iconSize === "sm" || !iconSize,
+					"h-8 w-8": iconSize === "md",
+					"h-10 w-10": iconSize === "lg",
+				},
+				className,
+			)}
+			{...props}>
+			<div
+				className={cn(
+					"flex items-center justify-center text-primary-foreground",
+					{
+						"h-4 w-4": iconSize === "sm" || !iconSize,
+						"h-5 w-5": iconSize === "md",
+						"h-6 w-6": iconSize === "lg",
+					},
+				)}>
+				{icon}
+			</div>
+		</div>
+	),
+);
 TimelineIcon.displayName = "TimelineIcon";
 
 const TimelineDescription = React.forwardRef<
@@ -109,7 +259,7 @@ const TimelineContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<div
 		ref={ref}
-		className={cn("flex flex-col items-start p-6 pt-0", className)}
+		className={cn("flex flex-col gap-2 pl-2", className)}
 		{...props}
 	/>
 ));
