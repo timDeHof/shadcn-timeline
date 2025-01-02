@@ -4,7 +4,7 @@ A beautiful, accessible, and customizable timeline component built with React an
 
 ## Demo & Documentation
 
-🔗 [View Storybook Documentation](https://shadcn-timeline.vercel.app)
+🔗 [View Storybook Documentation](https://timdehof.github.io/shadcn-timeline/)
 
 ## Features
 
