@@ -75,51 +75,87 @@ const TimelineItem = React.forwardRef<
 			connectorColor,
 			showConnector = true,
 			iconsize,
+			initial,
+			animate,
+			transition,
 			...props
 		},
 		ref,
 	) => {
-		return (
+		const commonClassName = cn(
+			"relative",
+			" rounded-lg transition-colors duration-200",
+			"w-fit",
+			className,
+		);
+
+		const content = (
+			<div className='grid grid-cols-[minmax(auto,8rem)_auto_1fr] items-start px-4'>
+				{/* Date */}
+				<TimelineTime className="text-right pr-4">{date}</TimelineTime>
+
+				{/* Timeline dot and connector */}
+				<div className='mx-3 flex flex-col h-full w-6 items-center justify-start gap-y-2'>
+					<TimelineIcon
+						icon={icon}
+						color={iconColor}
+						status={status}
+						iconSize={iconsize}
+					/>
+
+					{showConnector && (
+						<TimelineConnector
+							status={status}
+							color={connectorColor}
+							className='h-full'
+						/>
+					)}
+				</div>
+
+				{/* Content */}
+				<TimelineContent>
+					<TimelineHeader>
+						<TimelineTitle>{title}</TimelineTitle>
+					</TimelineHeader>
+					<TimelineDescription>{description}</TimelineDescription>
+				</TimelineContent>
+			</div>
+		);
+
+		return animate ? (
 			<motion.li
 				ref={ref}
-				className={cn(
-					"relative",
-					"hover:bg-muted/50 rounded-lg transition-colors duration-200",
-					"w-fit",
-					className,
-				)}
+				className={commonClassName}
+				initial={initial}
+				animate={animate}
+				transition={transition}
 				{...props}>
-				<div className='grid grid-cols-[minmax(auto,8rem)_auto_1fr] items-start px-4'>
-					{/* Date */}
-					<TimelineTime className="text-right pr-4">{date}</TimelineTime>
-
-					{/* Timeline dot and connector */}
-					<div className='mx-3 flex flex-col h-full w-6 items-center justify-start gap-y-2'>
-						<TimelineIcon
-							icon={icon}
-							color={iconColor}
-							status={status}
-							iconSize={iconsize}
-						/>
-
-						{showConnector && (
-							<TimelineConnector
-								status={status}
-								color={connectorColor}
-								className='-translate-x-1/2 h-full'
-							/>
-						)}
-					</div>
-
-					{/* Content */}
-					<TimelineContent>
-						<TimelineHeader>
-							<TimelineTitle>{title}</TimelineTitle>
-						</TimelineHeader>
-						<TimelineDescription>{description}</TimelineDescription>
-					</TimelineContent>
-				</div>
+				{content}
 			</motion.li>
+		) : (
+			<li
+				ref={ref}
+				className={commonClassName}
+				{...(() => {
+					const {
+						style,
+						onDrag,
+						onDragStart,
+						onDragEnd,
+						onAnimationStart,
+						onAnimationComplete,
+						transformTemplate,
+						whileHover,
+						whileTap,
+						whileDrag,
+						whileFocus,
+						whileInView,
+						...filteredProps
+					} = props;
+					return filteredProps;
+				})()}>
+				{content}
+			</li>
 		);
 	},
 );

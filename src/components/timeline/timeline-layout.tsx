@@ -6,6 +6,7 @@ import {
 	TimelineItem,
 } from "@/components/timeline/timeline";
 import { TimelineElement } from "@/app/data";
+import { motion } from "framer-motion";
 
 interface TimelineLayoutProps {
 	items: TimelineElement[];
@@ -28,23 +29,25 @@ export const TimelineLayout = ({
 	return (
 		<Timeline size={size} className={className}>
 			{[...items].reverse().map((item, index) => (
-				<TimelineItem
-					key={index}
-					date={item.date}
-					title={item.title}
+				<motion.div
+					initial={animate ? { opacity: 0, y: 20 } : false}
+					animate={animate ? { opacity: 1, y: 0 } : false}
+					transition={{
+						duration: 0.5,
+						delay: index * 0.1,
+						ease: "easeOut"
+					}}>
+					<TimelineItem
+						key={index}
+						date={item.date}
+						title={item.title}
 						description={item.description}
 						icon={item.icon || customIcon}
-						iconColor={item.color as typeof iconColor || iconColor}
-						connectorColor={item.color as typeof connectorColor || connectorColor}
+						iconColor={(item.color || iconColor) as "primary" | "secondary" | "muted" | "accent" | undefined}
+						connectorColor={(item.color || connectorColor) as "primary" | "secondary" | "muted" | "accent" | undefined}
 						showConnector={index !== items.length - 1}
-						initial={animate ? { opacity: 0, y: 20 } : undefined}
-						animate={animate ? { opacity: 1, y: 0 } : undefined}
-						transition={{
-							duration: 0.5,
-							delay: index * 0.1,
-							ease: "easeOut"
-						}}
-				/>
+					/>
+				</motion.div>
 			))}
 		</Timeline>
 	);
