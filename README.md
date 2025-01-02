@@ -2,6 +2,10 @@
 
 A beautiful, accessible, and customizable timeline component built with React and Tailwind CSS.
 
+## Demo & Documentation
+
+🔗 [View Storybook Documentation](https://shadcn-timeline.vercel.app)
+
 ## Features
 
 - 🎨 Customizable appearance with different sizes and colors
@@ -11,6 +15,7 @@ A beautiful, accessible, and customizable timeline component built with React an
 - 📱 Responsive design
 - 🎯 TypeScript support
 - 🌐 SSR Compatible
+- 📚 Full Storybook documentation and examples
 
 ## Installation
 
@@ -20,6 +25,9 @@ git clone https://github.com/timDeHof/shadcn-timeline.git
 
 # Install dependencies
 npm install
+
+# Run Storybook locally
+npm run storybook
 ```
 
 ## Usage
@@ -96,3 +104,28 @@ MIT
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## Development
+
+To run Storybook locally:
+
+```bash
+npm run storybook
+```
+
+This will start Storybook on http://localhost:6006
+
+## Testing
+
+Run the test suite:
+
+```bash
+# Run tests
+npm run test
+
+# Run Storybook tests
+npm run test-storybook
+
+# Run Storybook tests with coverage
+npm run test-storybook:coverage
+```
