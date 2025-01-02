@@ -1,12 +1,13 @@
 import { TimelineLayout } from "@/components/timeline/timeline-layout";
 import Link from "next/link";
-import { GitHubLogoIcon, CalendarIcon } from "@radix-ui/react-icons";
+import { Github, Calendar } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { timelineData } from "./data";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Highlight, themes } from "prism-react-renderer";
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const installCode = `# 1. Clone the repository
 git clone https://github.com/timDeHof/shadcn-timeline.git
@@ -66,7 +67,7 @@ const examples = {
 				items={timelineData}
 				size='lg'
 				iconColor='primary'
-				customIcon={<CalendarIcon />}
+				customIcon={<Calendar />}
 			/>
 		),
 	},
@@ -98,13 +99,16 @@ export default function Home() {
 							<Link href='#' className='text-2xl font-bold'>
 								shadcn-timeline
 							</Link>
-							<Link
-								href='https://github.com/timDeHof/shadcn-timeline'
-								className={cn(
-									buttonVariants({ variant: "ghost", size: "icon" }),
-								)}>
-								<GitHubLogoIcon className='size-5' />
-							</Link>
+							<div className="flex items-center gap-2">
+								<ThemeToggle />
+								<Link
+									href='https://github.com/timDeHof/shadcn-timeline'
+									className={cn(
+										buttonVariants({ variant: "ghost", size: "icon" }),
+									)}>
+									<Github className='size-5' />
+								</Link>
+							</div>
 						</div>
 						<nav className='flex flex-col space-y-2'>
 							<Link

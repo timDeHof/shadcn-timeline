@@ -1,6 +1,7 @@
 import React from "react";
 import type { Preview } from "@storybook/react";
 import "../src/app/globals.css";
+import { ThemeProvider } from "../src/components/providers/theme-provider";
 
 const preview: Preview = {
   parameters: {
@@ -12,52 +13,41 @@ const preview: Preview = {
       },
     },
     backgrounds: {
-      default: 'light',
-      values: [
-        {
-          name: 'light',
-          value: '#ffffff',
-        },
-        {
-          name: 'dark',
-          value: '#1a1a1a',
-        },
-      ],
-    },
-    viewport: {
-      viewports: {
-        mobile: {
-          name: 'Mobile',
-          styles: {
-            width: '360px',
-            height: '640px',
-          },
-        },
-        tablet: {
-          name: 'Tablet',
-          styles: {
-            width: '768px',
-            height: '1024px',
-          },
-        },
-        desktop: {
-          name: 'Desktop',
-          styles: {
-            width: '1440px',
-            height: '900px',
-          },
-        },
-      },
+      disable: true,
     },
     layout: 'fullscreen',
+    docs: {
+      story: {
+        inline: true,
+      },
+      container: ({ children, context }) => (
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className="dark min-h-screen bg-background text-foreground">
+            {children}
+          </div>
+        </ThemeProvider>
+      ),
+    },
   },
   decorators: [
     (Story) => (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto max-w-2xl py-10">
-          <Story />
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <div className="dark min-h-screen bg-background">
+          <div className="container mx-auto max-w-2xl py-10">
+            <Story />
+          </div>
         </div>
-      </div>
+      </ThemeProvider>
     ),
   ],
 };

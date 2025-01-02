@@ -394,7 +394,7 @@ const TimelineIcon = React.forwardRef<
 			ref={ref}
 			className={cn(
 				"relative flex items-center justify-center rounded-full",
-				"ring-8 ring-background aspect-square",
+				"p-2.5 aspect-square",
 				{
 					"bg-primary":
 						(!color && status === "completed") || color === "primary",

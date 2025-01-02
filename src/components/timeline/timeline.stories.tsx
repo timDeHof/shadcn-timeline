@@ -11,25 +11,23 @@ const meta = {
   render: (args) => (
     <Timeline size={args.size} className={args.className}>
       {[...args.items].reverse().map((item, index) => (
-        <motion.div
+        <TimelineItem
           key={index}
-          initial={args.animate ? { opacity: 0, y: 20 } : false}
-          animate={args.animate ? { opacity: 1, y: 0 } : false}
+          date={item.date}
+          title={item.title}
+          description={item.description}
+          icon={item.icon || args.customIcon}
+          iconColor={(item.color || args.iconColor) as "primary" | "secondary" | "muted" | "accent" | undefined}
+          connectorColor={(item.color || args.connectorColor) as "primary" | "secondary" | "muted" | "accent" | undefined}
+          showConnector={index !== args.items.length - 1}
+          initial={args.animate ? { opacity: 0, y: 20 } : undefined}
+          animate={args.animate ? { opacity: 1, y: 0 } : undefined}
           transition={{
             duration: 0.5,
             delay: index * 0.1,
             ease: "easeOut"
-          }}>
-          <TimelineItem
-            date={item.date}
-            title={item.title}
-            description={item.description}
-            icon={item.icon || args.customIcon}
-            iconColor={(item.color || args.iconColor) as "primary" | "secondary" | "muted" | "accent" | undefined}
-            connectorColor={(item.color || args.connectorColor) as "primary" | "secondary" | "muted" | "accent" | undefined}
-            showConnector={index !== args.items.length - 1}
-          />
-        </motion.div>
+          }}
+        />
       ))}
     </Timeline>
   ),
