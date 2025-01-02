@@ -30,6 +30,7 @@ export const TimelineLayout = ({
 		<Timeline size={size} className={className}>
 			{[...items].reverse().map((item, index) => (
 				<motion.div
+					key={index}
 					initial={animate ? { opacity: 0, y: 20 } : false}
 					animate={animate ? { opacity: 1, y: 0 } : false}
 					transition={{
@@ -38,7 +39,6 @@ export const TimelineLayout = ({
 						ease: "easeOut"
 					}}>
 					<TimelineItem
-						key={index}
 						date={item.date}
 						title={item.title}
 						description={item.description}

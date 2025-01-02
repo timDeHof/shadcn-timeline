@@ -1,75 +1,98 @@
-# shadcn-timeline
+# Shadcn Timeline Component
 
-<div align="center">
-A clean and customizable timeline component for your React projects. Features include custom icons, animations, and different sizes.
-
-Built on top of shadcn/ui and Framer Motion.
-
-<a href='#Preview'>Preview</a> <a href='#Features'>Features</a> <a href='#Usage'>Usage</a> <a href='#Installation'>Installation</a> <a href='#Tech Stack'>Tech Stack</a>
-</div>
-
-## Preview
-
-![shadcn_timeline_laptop](https://github.com/timDeHof/shadcn-timeline/assets/2568193/a710af62-36b6-4ea8-b8ba-130f913561dd)
+A beautiful, accessible, and customizable timeline component built with React and Tailwind CSS.
 
 ## Features
-- 🎨 Clean, modern design
-- 📱 Responsive layout
-- ✨ Smooth animations
-- 🎯 Custom icons support
-- 📏 Multiple sizes (sm, md, lg)
-- 🎨 Customizable colors
-- 🔌 Easy to integrate
+
+- 🎨 Customizable appearance with different sizes and colors
+- ♿️ Fully accessible with ARIA attributes
+- 🔄 Loading and error states
+- 🎭 Smooth animations with Framer Motion
+- 📱 Responsive design
+- 🎯 TypeScript support
+- 🌐 SSR Compatible
+
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/timDeHof/shadcn-timeline.git
+
+# Install dependencies
+npm install
+```
 
 ## Usage
-Import the timeline components into your NextJS project:
 
 ```tsx
-import { TimelineLayout } from "@/components/timeline/timeline-layout";
+import { Timeline, TimelineItem } from '@/components/timeline'
+import { Check } from 'lucide-react'
 
-export default function MyTimeline() {
+export default function Example() {
   return (
-    <TimelineLayout
-      items={timelineData}
-      size="md"
-      iconColor="primary"
-      connectorColor="primary"
-      customIcon={<CalendarIcon />}
-      animate={true}
-    />
-  );
+    <Timeline>
+      <TimelineItem
+        date={new Date("2024-01-01")}
+        title="Feature Released"
+        description="New timeline component is now available"
+        icon={<Check />}
+        status="completed"
+      />
+      <TimelineItem
+        date={new Date("2024-01-02")}
+        title="In Progress"
+        description="Working on documentation"
+        status="in-progress"
+      />
+      <TimelineItem
+        date={new Date("2024-01-03")}
+        title="Upcoming"
+        description="Planning future updates"
+        status="pending"
+      />
+    </Timeline>
+  )
 }
 ```
 
-Copy these components to your project:
-```bash
-/src/components/timeline/timeline-layout.tsx
-/src/components/timeline/timeline.tsx
-```
+## Props
 
-## Installation
-To try out the demo locally:
+### Timeline
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/timDeHof/shadcn-timeline.git
-   ```
-2. Open the folder:
-   ```bash
-   cd shadcn-timeline
-   ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
-5. Go to [localhost](http://localhost:3000) and start exploring!
+| Prop     | Type                | Default | Description           |
+|----------|--------------------|---------|-----------------------|
+| size     | 'sm' \| 'md' \| 'lg' | 'md'    | Size of the timeline |
+| iconsize | 'sm' \| 'md' \| 'lg' | 'md'    | Size of icons        |
 
-## Tech stack
-- [NextJS](https://nextjs.org/) - React Framework for the web
-- [TailwindCSS](https://tailwindcss.com/) - Utility-first CSS framework
-- [shadcn/ui](https://ui.shadcn.com/) - UI components built using Radix UI and Tailwind CSS
-- [Framer Motion](https://www.framer.com/motion/) - Animation library for React
+### TimelineItem
+
+| Prop           | Type                                        | Default     | Description                |
+|----------------|---------------------------------------------|-------------|----------------------------|
+| date          | Date \| string \| number                    | -           | Date of the event          |
+| title         | string                                      | -           | Title of the event         |
+| description   | string                                      | -           | Description of the event   |
+| icon          | ReactNode                                   | -           | Custom icon                |
+| iconColor     | 'primary' \| 'secondary' \| 'muted' \| 'accent' | 'primary'  | Color theme of the icon    |
+| status        | 'completed' \| 'in-progress' \| 'pending'    | 'completed' | Current status            |
+| loading       | boolean                                     | false       | Show loading state         |
+| error         | string                                      | -           | Show error state          |
+
+### TimelineTime
+
+| Prop           | Type                                   | Default     | Description                |
+|----------------|----------------------------------------|-------------|----------------------------|
+| date          | Date \| string \| number               | -           | Date to display            |
+| format        | string \| Intl.DateTimeFormatOptions   | -           | Date formatting options    |
+| className     | string                                 | -           | Additional CSS classes     |
+
+## Server-Side Rendering
+
+The component is fully SSR compatible and handles hydration properly. Date formatting is handled on the client side to prevent hydration mismatches.
+
+## License
+
+MIT
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

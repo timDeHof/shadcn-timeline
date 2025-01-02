@@ -45,3 +45,5 @@ next-env.d.ts
 .env.development.local
 .env.test.local
 .env.production.local
+
+*storybook.log
