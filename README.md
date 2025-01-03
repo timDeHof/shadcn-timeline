@@ -34,33 +34,33 @@ npm run storybook
 ## Usage
 
 ```tsx
-import { Timeline, TimelineItem } from '@/components/timeline'
-import { Check } from 'lucide-react'
+import { Timeline, TimelineItem } from '@/components/timeline';
+import { Check } from 'lucide-react';
 
 export default function Example() {
   return (
     <Timeline>
       <TimelineItem
-        date={new Date("2024-01-01")}
+        date={new Date('2024-01-01')}
         title="Feature Released"
         description="New timeline component is now available"
         icon={<Check />}
         status="completed"
       />
       <TimelineItem
-        date={new Date("2024-01-02")}
+        date={new Date('2024-01-02')}
         title="In Progress"
         description="Working on documentation"
         status="in-progress"
       />
       <TimelineItem
-        date={new Date("2024-01-03")}
+        date={new Date('2024-01-03')}
         title="Upcoming"
         description="Planning future updates"
         status="pending"
       />
     </Timeline>
-  )
+  );
 }
 ```
 
@@ -68,31 +68,31 @@ export default function Example() {
 
 ### Timeline
 
-| Prop     | Type                | Default | Description           |
-|----------|--------------------|---------|-----------------------|
+| Prop     | Type                 | Default | Description          |
+| -------- | -------------------- | ------- | -------------------- |
 | size     | 'sm' \| 'md' \| 'lg' | 'md'    | Size of the timeline |
 | iconsize | 'sm' \| 'md' \| 'lg' | 'md'    | Size of icons        |
 
 ### TimelineItem
 
-| Prop           | Type                                        | Default     | Description                |
-|----------------|---------------------------------------------|-------------|----------------------------|
-| date          | Date \| string \| number                    | -           | Date of the event          |
-| title         | string                                      | -           | Title of the event         |
-| description   | string                                      | -           | Description of the event   |
-| icon          | ReactNode                                   | -           | Custom icon                |
-| iconColor     | 'primary' \| 'secondary' \| 'muted' \| 'accent' | 'primary'  | Color theme of the icon    |
-| status        | 'completed' \| 'in-progress' \| 'pending'    | 'completed' | Current status            |
-| loading       | boolean                                     | false       | Show loading state         |
-| error         | string                                      | -           | Show error state          |
+| Prop        | Type                                            | Default     | Description              |
+| ----------- | ----------------------------------------------- | ----------- | ------------------------ |
+| date        | Date \| string \| number                        | -           | Date of the event        |
+| title       | string                                          | -           | Title of the event       |
+| description | string                                          | -           | Description of the event |
+| icon        | ReactNode                                       | -           | Custom icon              |
+| iconColor   | 'primary' \| 'secondary' \| 'muted' \| 'accent' | 'primary'   | Color theme of the icon  |
+| status      | 'completed' \| 'in-progress' \| 'pending'       | 'completed' | Current status           |
+| loading     | boolean                                         | false       | Show loading state       |
+| error       | string                                          | -           | Show error state         |
 
 ### TimelineTime
 
-| Prop           | Type                                   | Default     | Description                |
-|----------------|----------------------------------------|-------------|----------------------------|
-| date          | Date \| string \| number               | -           | Date to display            |
-| format        | string \| Intl.DateTimeFormatOptions   | -           | Date formatting options    |
-| className     | string                                 | -           | Additional CSS classes     |
+| Prop      | Type                                 | Default | Description             |
+| --------- | ------------------------------------ | ------- | ----------------------- |
+| date      | Date \| string \| number             | -       | Date to display         |
+| format    | string \| Intl.DateTimeFormatOptions | -       | Date formatting options |
+| className | string                               | -       | Additional CSS classes  |
 
 ## Server-Side Rendering
 
