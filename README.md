@@ -1,6 +1,11 @@
 # Shadcn Timeline Component
+<a href="https://www.buymeacoffee.com/timDeHof" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-A beautiful, accessible, and customizable timeline component built with React and Tailwind CSS.
+A beautiful, accessible, and customizable timeline component built  on top of <a href="https://shadcn.com" target="_blank">shadcn/ui</a> with React and Tailwind CSS.
+
+The same as shadcn/ui, all components are free to use for personal and commercial.
+
+Just copy and paste to your project and customize to your needs. The code is yours.
 
 ## Demo & Documentation
 
@@ -98,14 +103,6 @@ export default function Example() {
 
 The component is fully SSR compatible and handles hydration properly. Date formatting is handled on the client side to prevent hydration mismatches.
 
-## License
-
-MIT
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
 ## Development
 
 To run Storybook locally:
@@ -130,3 +127,10 @@ npm run test-storybook
 # Run Storybook tests with coverage
 npm run test-storybook:coverage
 ```
+## Contributing
+- [Open an issue](https://github.com/timDeHof/shadcn-timeline/issues) if you believe you've encountered a bug.
+- Make a [Pull request](https://github.com/timDeHof/shadcn-timeline/pulls) if you want to add a new feature/make quality of life improvements/ fix bugs.
+
+## License
+
+MIT

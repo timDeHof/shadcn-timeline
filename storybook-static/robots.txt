@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://shadcn-timeline.vercel.app
+
+# Sitemaps
+Sitemap: https://shadcn-timeline.vercel.app/sitemap.xml
