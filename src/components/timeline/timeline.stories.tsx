@@ -3,7 +3,6 @@ import { expect, within } from '@storybook/test';
 import { Timeline, TimelineItem } from './timeline';
 import { TimelineLayout } from './timeline-layout';
 import { Check, GitPullRequest, GitBranch } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const meta = {
   title: 'Components/Timeline',
@@ -17,15 +16,29 @@ const meta = {
           title={item.title}
           description={item.description}
           icon={item.icon || args.customIcon}
-          iconColor={(item.color || args.iconColor) as "primary" | "secondary" | "muted" | "accent" | undefined}
-          connectorColor={(item.color || args.connectorColor) as "primary" | "secondary" | "muted" | "accent" | undefined}
+          iconColor={
+            (item.color || args.iconColor) as
+              | 'primary'
+              | 'secondary'
+              | 'muted'
+              | 'accent'
+              | undefined
+          }
+          connectorColor={
+            (item.color || args.connectorColor) as
+              | 'primary'
+              | 'secondary'
+              | 'muted'
+              | 'accent'
+              | undefined
+          }
           showConnector={index !== args.items.length - 1}
           initial={args.animate ? { opacity: 0, y: 20 } : undefined}
           animate={args.animate ? { opacity: 1, y: 0 } : undefined}
           transition={{
             duration: 0.5,
             delay: index * 0.1,
-            ease: "easeOut"
+            ease: 'easeOut',
           }}
         />
       ))}
@@ -34,7 +47,8 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component: 'A beautiful, accessible timeline component that supports various states, sizes, and customizations.',
+        component:
+          'A beautiful, accessible timeline component that supports various states, sizes, and customizations.',
       },
     },
   },
@@ -74,21 +88,24 @@ const defaultItems = [
     id: 1,
     date: '2022-01-01',
     title: 'First event',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Odio euismod lacinia at quis risus sed vulputate odio ut. Quam viverra orci sagittis eu volutpat odio facilisis mauris.',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Odio euismod lacinia at quis risus sed vulputate odio ut. Quam viverra orci sagittis eu volutpat odio facilisis mauris.',
     icon: <Check />,
   },
   {
     id: 2,
     date: '2022-02-01',
     title: 'Second event',
-    description: 'Aut eius excepturi ex recusandae eius est minima molestiae. Nam dolores iusto ad fugit reprehenderit hic dolorem quisquam et quia omnis non suscipit nihil sit.',
+    description:
+      'Aut eius excepturi ex recusandae eius est minima molestiae. Nam dolores iusto ad fugit reprehenderit hic dolorem quisquam et quia omnis non suscipit nihil sit.',
     icon: <GitPullRequest />,
   },
   {
     id: 3,
     date: '2022-03-01',
     title: 'Third event',
-    description: 'Sit culpa quas ex nulla animi qui deleniti minus rem placeat mollitia. Et enim doloremque et quia sequi ea dolores voluptatem ea rerum vitae.',
+    description:
+      'Sit culpa quas ex nulla animi qui deleniti minus rem placeat mollitia. Et enim doloremque et quia sequi ea dolores voluptatem ea rerum vitae.',
     icon: <GitBranch />,
   },
 ];
@@ -98,9 +115,9 @@ export const Default: Story = {
     items: defaultItems,
     size: 'md',
     animate: true,
-    iconColor: "primary",
-    connectorColor: "primary",
-    className: "min-h-[600px] px-4"
+    iconColor: 'primary',
+    connectorColor: 'primary',
+    className: 'min-h-[600px] px-4',
   },
   parameters: {
     docs: {
@@ -115,9 +132,9 @@ export const NoAnimation: Story = {
   args: {
     items: defaultItems,
     animate: false,
-    iconColor: "primary",
-    connectorColor: "primary",
-    className: "min-h-[600px] px-4"
+    iconColor: 'primary',
+    connectorColor: 'primary',
+    className: 'min-h-[600px] px-4',
   },
   parameters: {
     docs: {
@@ -133,9 +150,9 @@ export const LargeSize: Story = {
     items: defaultItems,
     size: 'lg',
     animate: true,
-    iconColor: "primary",
-    connectorColor: "primary",
-    className: "min-h-[600px] px-4"
+    iconColor: 'primary',
+    connectorColor: 'primary',
+    className: 'min-h-[600px] px-4',
   },
   parameters: {
     docs: {
@@ -148,13 +165,13 @@ export const LargeSize: Story = {
 
 export const CustomColors: Story = {
   args: {
-    items: defaultItems.map(item => ({
+    items: defaultItems.map((item) => ({
       ...item,
       color: 'secondary',
     })),
     iconColor: 'secondary',
     connectorColor: 'secondary',
-    className: "min-h-[600px] px-4"
+    className: 'min-h-[600px] px-4',
   },
   parameters: {
     docs: {
@@ -169,8 +186,8 @@ export const WithInteractions: Story = {
   args: {
     items: defaultItems,
     animate: true,
-    iconColor: "primary",
-    className: "min-h-[600px] px-4"
+    iconColor: 'primary',
+    className: 'min-h-[600px] px-4',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
