@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Timeline, TimelineItem } from './timeline';
-import { TimelineElement } from '../../app/data';
 import { motion } from 'framer-motion';
+import type { TimelineElement } from '@/types';
 
 interface TimelineLayoutProps {
   items: TimelineElement[];
@@ -14,6 +14,7 @@ interface TimelineLayoutProps {
   connectorColor?: 'primary' | 'secondary' | 'muted' | 'accent';
   className?: string;
 }
+
 export const TimelineLayout = ({
   items,
   size = 'md',
@@ -40,18 +41,9 @@ export const TimelineLayout = ({
             date={item.date}
             title={item.title}
             description={item.description}
-            icon={item.icon || customIcon}
-            iconColor={
-              (item.color || iconColor) as 'primary' | 'secondary' | 'muted' | 'accent' | undefined
-            }
-            connectorColor={
-              (item.color || connectorColor) as
-                | 'primary'
-                | 'secondary'
-                | 'muted'
-                | 'accent'
-                | undefined
-            }
+            icon={typeof item.icon === 'function' ? item.icon() : item.icon || customIcon}
+            iconColor={item.color || iconColor}
+            connectorColor={item.color || connectorColor}
             showConnector={index !== items.length - 1}
           />
         </motion.div>
