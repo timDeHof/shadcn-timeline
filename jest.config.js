@@ -1,4 +1,4 @@
-module.exports = {
+const createJestConfig = (overrides = {}) => ({
   testEnvironment: 'jsdom',
   transform: {
     '^.+\\.(ts|tsx)$': [
@@ -12,4 +12,13 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-};
+  ...overrides,
+});
+
+module.exports = createJestConfig({
+  projects: [
+    '<rootDir>/packages/*/jest.config.js',
+  ],
+});
+
+module.exports.createJestConfig = createJestConfig;

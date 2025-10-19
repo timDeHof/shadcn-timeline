@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "nxCloudId": "68f55dd66b4c2e1be46b5382",
+  "cli": {
+    "packageManager": "pnpm",
+    "start": false,
+    "stop": false
+  },
+  "plugins": [
+    "@nx/eslint/plugin",
+    "@nx/next/plugin",
+    "@nrwl/mono-repository"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["../core/src/*"],
+      "@shadcn-timeline/core": ["../core/src"]
+    }
+  },
+  "include": [
+    ".storybook/**/*",
+    "../core/src/**/*"
+  ],
+  "exclude": ["node_modules"]
+}

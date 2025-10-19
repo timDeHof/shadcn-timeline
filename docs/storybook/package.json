@@ -1,0 +1,31 @@
+{
+  "name": "@shadcn-timeline/storybook",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "test-storybook": "test-storybook",
+    "test-storybook:coverage": "test-storybook --coverage"
+  },
+  "dependencies": {
+    "@shadcn-timeline/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.3",
+    "@storybook/addon-a11y": "^8.4.7",
+    "@storybook/addon-coverage": "^1.0.5",
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/addon-interactions": "^8.4.7",
+    "@storybook/addon-links": "^8.4.7",
+    "@storybook/addon-onboarding": "^8.4.7",
+    "@storybook/addon-styling-webpack": "^1.0.1",
+    "@storybook/addon-themes": "^8.4.7",
+    "@storybook/blocks": "^8.4.7",
+    "@storybook/nextjs": "^8.4.7",
+    "@storybook/react": "^8.4.7",
+    "@storybook/test": "^8.4.7",
+    "@storybook/test-runner": "^0.21.0",
+    "storybook": "^8.4.7"
+  }
+}
