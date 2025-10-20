@@ -12,6 +12,7 @@ function cn(...inputs) {
 import { cva } from "class-variance-authority";
 import { motion } from "framer-motion";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { jsx, jsxs } from "react/jsx-runtime";
 var timelineVariants = cva("flex flex-col relative", {
   variants: {
     size: {
@@ -28,9 +29,9 @@ var Timeline = React.forwardRef(
   ({ className, iconsize, size, children, ...props }, ref) => {
     const items = React.Children.toArray(children);
     if (items.length === 0) {
-      return /* @__PURE__ */ React.createElement(TimelineEmpty, null);
+      return /* @__PURE__ */ jsx(TimelineEmpty, {});
     }
-    return /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ jsx(
       "ol",
       {
         ref,
@@ -40,17 +41,17 @@ var Timeline = React.forwardRef(
           "relative min-h-[600px] w-full max-w-2xl mx-auto py-8",
           className
         ),
-        ...props
-      },
-      React.Children.map(children, (child, index) => {
-        if (React.isValidElement(child) && typeof child.type !== "string" && "displayName" in child.type && child.type.displayName === "TimelineItem") {
-          return React.cloneElement(child, {
-            iconsize,
-            showConnector: index !== items.length - 1
-          });
-        }
-        return child;
-      })
+        ...props,
+        children: React.Children.map(children, (child, index) => {
+          if (React.isValidElement(child) && typeof child.type !== "string" && "displayName" in child.type && child.type.displayName === "TimelineItem") {
+            return React.cloneElement(child, {
+              iconsize,
+              showConnector: index !== items.length - 1
+            });
+          }
+          return child;
+        })
+      }
     );
   }
 );
@@ -87,7 +88,7 @@ var TimelineItem = React.forwardRef(
       return status === "completed" ? "primary" : status === "in-progress" ? "secondary" : "muted";
     };
     if (loading) {
-      return /* @__PURE__ */ React.createElement(
+      return /* @__PURE__ */ jsx(
         motion.li,
         {
           ref,
@@ -95,13 +96,36 @@ var TimelineItem = React.forwardRef(
           initial: { opacity: 0 },
           animate: { opacity: 1 },
           role: "status",
-          ...props
-        },
-        /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-[minmax(auto,8rem)_auto_1fr] items-start px-4" }, /* @__PURE__ */ React.createElement("div", { className: "pr-4 text-right" }, /* @__PURE__ */ React.createElement("div", { className: "h-4 w-24 animate-pulse rounded bg-muted" })), /* @__PURE__ */ React.createElement("div", { className: "mx-3 flex flex-col items-center justify-start gap-y-2" }, /* @__PURE__ */ React.createElement("div", { className: "relative flex h-8 w-8 animate-pulse items-center justify-center rounded-full bg-muted ring-8 ring-background" }, /* @__PURE__ */ React.createElement(Loader2, { className: "h-4 w-4 animate-spin text-muted-foreground" })), showConnector && /* @__PURE__ */ React.createElement("div", { className: cn("h-full w-0.5 animate-pulse bg-muted", getConnectorColor(connectorColor)) })), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col gap-2 pl-2" }, /* @__PURE__ */ React.createElement("div", { className: "space-y-2" }, /* @__PURE__ */ React.createElement("div", { className: "h-4 w-24 animate-pulse rounded bg-muted" }), /* @__PURE__ */ React.createElement("div", { className: "h-3 w-48 animate-pulse rounded bg-muted" }))))
+          ...props,
+          children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-[minmax(auto,8rem)_auto_1fr] items-start px-4", children: [
+            /* @__PURE__ */ jsx("div", { className: "pr-4 text-right", children: /* @__PURE__ */ jsx("div", { className: "h-4 w-24 animate-pulse rounded bg-muted" }) }),
+            /* @__PURE__ */ jsxs("div", { className: "mx-3 flex flex-col items-center justify-start gap-y-2", children: [
+              /* @__PURE__ */ jsx("div", { className: cn("relative flex h-8 w-8 animate-pulse items-center justify-center rounded-full bg-muted ring-8 ring-background"), children: /* @__PURE__ */ jsx(
+                TimelineIcon,
+                {
+                  icon: /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin text-muted-foreground" }),
+                  iconSize: iconsize,
+                  status: "in-progress"
+                }
+              ) }),
+              showConnector && /* @__PURE__ */ jsx(
+                TimelineConnector,
+                {
+                  status: "in-progress",
+                  className: cn("h-full w-0.5", getConnectorColor(connectorColor))
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsx("div", { className: "flex flex-col gap-2 pl-2", children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx("div", { className: "h-4 w-24 animate-pulse rounded bg-muted" }),
+              /* @__PURE__ */ jsx("div", { className: "h-3 w-48 animate-pulse rounded bg-muted" })
+            ] }) })
+          ] })
+        }
       );
     }
     if (error) {
-      return /* @__PURE__ */ React.createElement(
+      return /* @__PURE__ */ jsx(
         motion.li,
         {
           ref,
@@ -109,20 +133,38 @@ var TimelineItem = React.forwardRef(
           initial: { opacity: 0 },
           animate: { opacity: 1 },
           role: "alert",
-          ...props
-        },
-        /* @__PURE__ */ React.createElement("div", { className: "grid grid-cols-[minmax(auto,8rem)_auto_1fr] items-start px-4" }, /* @__PURE__ */ React.createElement("div", { className: "pr-4 text-right" }, /* @__PURE__ */ React.createElement(TimelineTime, { className: "text-destructive" }, date)), /* @__PURE__ */ React.createElement("div", { className: "mx-3 flex flex-col items-center justify-start gap-y-2" }, /* @__PURE__ */ React.createElement("div", { className: "relative flex h-8 w-8 items-center justify-center rounded-full bg-destructive/20 ring-8 ring-background" }, /* @__PURE__ */ React.createElement(AlertCircle, { className: "h-4 w-4 text-destructive" })), showConnector && /* @__PURE__ */ React.createElement(TimelineConnector, { status: "pending", className: "h-full" })), /* @__PURE__ */ React.createElement("div", { className: "flex flex-col gap-2 pl-2" }, /* @__PURE__ */ React.createElement(TimelineHeader, null, /* @__PURE__ */ React.createElement(TimelineTitle, { className: "text-destructive" }, title || "Error")), /* @__PURE__ */ React.createElement(TimelineDescription, { className: "text-destructive" }, error)))
+          ...props,
+          children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-[minmax(auto,8rem)_auto_1fr] items-start px-4", children: [
+            /* @__PURE__ */ jsx("div", { className: "pr-4 text-right", children: /* @__PURE__ */ jsx(TimelineTime, { className: "text-destructive", children: date }) }),
+            /* @__PURE__ */ jsxs("div", { className: "mx-3 flex flex-col items-center justify-start gap-y-2", children: [
+              /* @__PURE__ */ jsx("div", { className: "relative flex h-8 w-8 items-center justify-center rounded-full bg-destructive/20 ring-8 ring-background", children: /* @__PURE__ */ jsx(AlertCircle, { className: "h-4 w-4 text-destructive" }) }),
+              showConnector && /* @__PURE__ */ jsx(TimelineConnector, { status: "pending", className: "h-full" })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-2 pl-2", children: [
+              /* @__PURE__ */ jsx(TimelineHeader, { children: /* @__PURE__ */ jsx(TimelineTitle, { className: "text-destructive", children: title || "Error" }) }),
+              /* @__PURE__ */ jsx(TimelineDescription, { className: "text-destructive", children: error })
+            ] })
+          ] })
+        }
       );
     }
-    const content = /* @__PURE__ */ React.createElement(
+    const content = /* @__PURE__ */ jsxs(
       "div",
       {
         className: "grid grid-cols-[1fr_auto_1fr] gap-4 items-start",
-        ...status === "in-progress" ? { "aria-current": "step" } : {}
-      },
-      /* @__PURE__ */ React.createElement("div", { className: "flex flex-col justify-start pt-1" }, /* @__PURE__ */ React.createElement(TimelineTime, { className: "text-right pr-4" }, date)),
-      /* @__PURE__ */ React.createElement("div", { className: "flex flex-col items-center" }, /* @__PURE__ */ React.createElement("div", { className: "relative z-10" }, /* @__PURE__ */ React.createElement(TimelineIcon, { icon, color: iconColor, status, iconSize: iconsize })), showConnector && /* @__PURE__ */ React.createElement("div", { className: "h-16 w-0.5 bg-border mt-2" })),
-      /* @__PURE__ */ React.createElement(TimelineContent, null, /* @__PURE__ */ React.createElement(TimelineHeader, null, /* @__PURE__ */ React.createElement(TimelineTitle, null, title)), /* @__PURE__ */ React.createElement(TimelineDescription, null, description))
+        ...status === "in-progress" ? { "aria-current": "step" } : {},
+        children: [
+          /* @__PURE__ */ jsx("div", { className: "flex flex-col justify-start pt-1", children: /* @__PURE__ */ jsx(TimelineTime, { className: "text-right pr-4", children: date }) }),
+          /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center", children: [
+            /* @__PURE__ */ jsx("div", { className: "relative z-10", children: /* @__PURE__ */ jsx(TimelineIcon, { icon, color: iconColor, status, iconSize: iconsize }) }),
+            showConnector && /* @__PURE__ */ jsx("div", { className: "h-16 w-0.5 bg-border mt-2" })
+          ] }),
+          /* @__PURE__ */ jsxs(TimelineContent, { children: [
+            /* @__PURE__ */ jsx(TimelineHeader, { children: /* @__PURE__ */ jsx(TimelineTitle, { children: title }) }),
+            /* @__PURE__ */ jsx(TimelineDescription, { children: description })
+          ] })
+        ]
+      }
     );
     const {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -151,7 +193,7 @@ var TimelineItem = React.forwardRef(
       whileInView,
       ...filteredProps
     } = props;
-    return /* @__PURE__ */ React.createElement("li", { ref, className: commonClassName, ...filteredProps }, content);
+    return /* @__PURE__ */ jsx("li", { ref, className: commonClassName, ...filteredProps, children: content });
   }
 );
 TimelineItem.displayName = "TimelineItem";
@@ -176,20 +218,20 @@ var TimelineTime = React.forwardRef(
         return "";
       }
     }, [date, format]);
-    return /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ jsx(
       "time",
       {
         ref,
         dateTime: date ? new Date(date).toISOString() : void 0,
         className: cn("text-sm font-medium tracking-tight text-muted-foreground", className),
-        ...props
-      },
-      children || formattedDate
+        ...props,
+        children: children || formattedDate
+      }
     );
   }
 );
 TimelineTime.displayName = "TimelineTime";
-var TimelineConnector = React.forwardRef(({ className, status = "completed", color, ...props }, ref) => /* @__PURE__ */ React.createElement(
+var TimelineConnector = React.forwardRef(({ className, status = "completed", color, ...props }, ref) => /* @__PURE__ */ jsx(
   "div",
   {
     ref,
@@ -209,17 +251,17 @@ var TimelineConnector = React.forwardRef(({ className, status = "completed", col
 ));
 TimelineConnector.displayName = "TimelineConnector";
 var TimelineHeader = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React.createElement("div", { ref, className: cn("flex items-center gap-4", className), ...props })
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("flex items-center gap-4", className), ...props })
 );
 TimelineHeader.displayName = "TimelineHeader";
-var TimelineTitle = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ React.createElement(
+var TimelineTitle = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx(
   "h3",
   {
     ref,
     className: cn("font-semibold leading-none tracking-tight text-secondary-foreground", className),
-    ...props
-  },
-  children
+    ...props,
+    children
+  }
 ));
 TimelineTitle.displayName = "TimelineTitle";
 var TimelineIcon = ({
@@ -259,40 +301,39 @@ var TimelineIcon = ({
         return colorClasses[color];
     }
   };
-  return /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       className: cn(
         "relative flex items-center justify-center rounded-full ring-8 ring-background shadow-sm",
         sizeClasses[iconSize],
         status ? getStatusColor(status) : colorClasses[color]
-      )
-    },
-    icon ? /* @__PURE__ */ React.createElement("div", { className: cn("flex items-center justify-center", iconSizeClasses[iconSize]) }, icon) : /* @__PURE__ */ React.createElement("div", { className: cn("rounded-full", iconSizeClasses[iconSize]) })
+      ),
+      children: icon ? /* @__PURE__ */ jsx("div", { className: cn("flex items-center justify-center", iconSizeClasses[iconSize]), children: icon }) : /* @__PURE__ */ jsx("div", { className: cn("rounded-full", iconSizeClasses[iconSize]) })
+    }
   );
 };
-var TimelineDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ React.createElement("p", { ref, className: cn("max-w-sm text-sm text-muted-foreground", className), ...props }));
+var TimelineDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("p", { ref, className: cn("max-w-sm text-sm text-muted-foreground", className), ...props }));
 TimelineDescription.displayName = "TimelineDescription";
 var TimelineContent = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ React.createElement("div", { ref, className: cn("flex flex-col gap-2 pl-2", className), ...props })
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("flex flex-col gap-2 pl-2", className), ...props })
 );
 TimelineContent.displayName = "TimelineContent";
 var TimelineEmpty = React.forwardRef(
-  ({ className, children, ...props }, ref) => /* @__PURE__ */ React.createElement(
+  ({ className, children, ...props }, ref) => /* @__PURE__ */ jsx(
     "div",
     {
       ref,
       className: cn("flex flex-col items-center justify-center p-8 text-center", className),
-      ...props
-    },
-    /* @__PURE__ */ React.createElement("p", { className: "text-sm text-muted-foreground" }, children || "No timeline items to display")
+      ...props,
+      children: /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: children || "No timeline items to display" })
+    }
   )
 );
 TimelineEmpty.displayName = "TimelineEmpty";
 
 // src/components/timeline/timeline-layout.tsx
-import React2 from "react";
-import { motion as motion2 } from "framer-motion";
+import { jsx as jsx2 } from "react/jsx-runtime";
 var TimelineLayout = ({
   items,
   size = "md",
@@ -302,31 +343,36 @@ var TimelineLayout = ({
   connectorColor,
   className
 }) => {
-  return /* @__PURE__ */ React2.createElement(Timeline, { size, className }, [...items].reverse().map((item, index) => /* @__PURE__ */ React2.createElement(
-    motion2.div,
+  return /* @__PURE__ */ jsx2(Timeline, { size, className, children: [...items].reverse().map((item, index) => /* @__PURE__ */ jsx2(
+    TimelineItem,
     {
-      key: index,
-      initial: animate ? { opacity: 0, y: 20 } : false,
-      animate: animate ? { opacity: 1, y: 0 } : false,
+      initial: animate ? { opacity: 0, y: 20 } : void 0,
+      animate: animate ? { opacity: 1, y: 0 } : void 0,
       transition: {
         duration: 0.5,
         delay: index * 0.1,
         ease: "easeOut"
-      }
+      },
+      date: item.date,
+      title: item.title,
+      description: item.description ?? "",
+      icon: (() => {
+        try {
+          if (typeof item.icon === "function") {
+            return item.icon();
+          }
+          return item.icon ?? customIcon;
+        } catch (error) {
+          console.error("Timeline icon function failed:", error);
+          return customIcon;
+        }
+      })(),
+      iconColor: ["primary", "secondary", "muted", "accent", "destructive"].includes(item.color) ? item.color : iconColor,
+      connectorColor: ["primary", "secondary", "muted", "accent", "destructive"].includes(item.color) ? item.color : connectorColor,
+      showConnector: index !== items.length - 1
     },
-    /* @__PURE__ */ React2.createElement(
-      TimelineItem,
-      {
-        date: item.date,
-        title: item.title,
-        description: item.description,
-        icon: typeof item.icon === "function" ? item.icon() : item.icon || customIcon,
-        iconColor: item.color || iconColor,
-        connectorColor: item.color || connectorColor,
-        showConnector: index !== items.length - 1
-      }
-    )
-  )));
+    index
+  )) });
 };
 export {
   Timeline,

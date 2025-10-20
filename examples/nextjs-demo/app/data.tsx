@@ -1,6 +1,4 @@
-import type { TimelineElement } from '@shadcn-timeline/core';
-
-export const timelineData: TimelineElement[] = [
+export const timelineData: Record<string, string | number>[] = [
   {
     id: 1,
     title: 'First event',
@@ -27,4 +25,4 @@ export const timelineData: TimelineElement[] = [
   },
 ];
 
-export type TimelineData = TimelineElement;
+export type TimelineData = HTMLElement;

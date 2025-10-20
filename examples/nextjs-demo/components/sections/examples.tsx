@@ -8,25 +8,27 @@ import { ExampleCard } from './example-card';
 const examples = {
   basic: {
     name: 'Basic',
-    code: `<TimelineLayout items={timelineData} size="md" />`,
-    component: <TimelineLayout items={timelineData} size="md" />,
+    code: `<TimelineLayout items={timelineData} size="md" iconColor="gray" customIcon={null} connectorColor="gray" className="" />`,
+    component: <TimelineLayout items={timelineData} size="md" iconColor="gray" customIcon={null} connectorColor="gray" className="" />,
   },
   customIcon: {
     name: 'Custom Icon',
-    code: `<TimelineLayout items={timelineData} size="lg" iconColor="primary" customIcon={<CalendarIcon />} />`,
+    code: `<TimelineLayout items={timelineData} size="lg" iconColor="primary" customIcon={<Calendar />} connectorColor="gray" className="" />`,
     component: (
       <TimelineLayout
         items={timelineData}
         size="lg"
         iconColor="primary"
         customIcon={<Calendar />}
+        connectorColor="gray"
+        className=""
       />
     ),
   },
   animated: {
     name: 'Animated',
-    code: `<TimelineLayout items={timelineData} size="md" animate={true} />`,
-    component: <TimelineLayout items={timelineData} size="md" animate={true} />,
+    code: `<TimelineLayout items={timelineData} size="md" animate={true} iconColor="gray" customIcon={null} connectorColor="gray" className="" />`,
+    component: <TimelineLayout items={timelineData} size="md" animate={true} iconColor="gray" customIcon={null} connectorColor="gray" className="" />,
   },
 };
 

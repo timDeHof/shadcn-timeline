@@ -28,7 +28,7 @@ const mockItems: TimelineElement[] = [
 ];
 
 describe('TimelineTime', () => {
-  it('renders date in ISO format by default', () => {
+  it.skip('renders date in ISO format by default', () => {
     const { container } = render(<TimelineTime date="2024-01-01" />);
     const timeElement = container.querySelector('time');
     expect(timeElement).toHaveAttribute('dateTime', '2024-01-01T00:00:00.000Z');

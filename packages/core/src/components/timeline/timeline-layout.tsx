@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { Timeline, TimelineItem } from './timeline';
-import type { TimelineElement } from '../../types';
+import { TimelineElement, TimelineColor } from '../../types';
 
-interface TimelineLayoutProps {
+
+type TimelineLayoutProps = {
   items: TimelineElement[];
   size?: 'sm' | 'md' | 'lg';
   iconColor?: 'primary' | 'secondary' | 'muted' | 'accent';
@@ -37,10 +38,20 @@ export const TimelineLayout = ({
           }}
           date={item.date}
           title={item.title}
-          description={item.description}
-          icon={typeof item.icon === 'function' ? item.icon() : item.icon || customIcon}
-          iconColor={item.color || iconColor}
-          connectorColor={item.color || connectorColor}
+          description={item.description ?? ''}
+          icon={(() => {
+            try {
+              if (typeof item.icon === 'function') {
+                return (item.icon as () => React.ReactNode)();
+              }
+              return item.icon ?? customIcon;
+            } catch (error) {
+              console.error('Timeline icon function failed:', error);
+              return customIcon;
+            }
+          })()}
+          iconColor={(['primary', 'secondary', 'muted', 'accent', 'destructive'] as const).includes(item.color as TimelineColor) ? item.color : iconColor}
+          connectorColor={(['primary', 'secondary', 'muted', 'accent', 'destructive'] as const).includes(item.color as TimelineColor) ? item.color : connectorColor}
           showConnector={index !== items.length - 1}
         />
       ))}

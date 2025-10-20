@@ -4,7 +4,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { motion, HTMLMotionProps } from 'framer-motion';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2 as LucideLoader } from 'lucide-react';
 import type { TimelineColor } from '@/types';
 
 const timelineVariants = cva('flex flex-col relative', {
@@ -30,7 +30,7 @@ interface TimelineProps
   extends React.HTMLAttributes<HTMLOListElement>,
   VariantProps<typeof timelineVariants> {
   /** Size of the timeline icons */
-  iconsize?: 'sm' | 'md' | 'lg';
+  iconSize?: 'sm' | 'md' | 'lg';
 }
 
 /**
@@ -38,7 +38,7 @@ interface TimelineProps
  * @component
  */
 const Timeline = React.forwardRef<HTMLOListElement, TimelineProps>(
-  ({ className, iconsize, size, children, ...props }, ref) => {
+  ({ className, iconSize, size, children, ...props }, ref) => {
     const items = React.Children.toArray(children);
 
     if (items.length === 0) {
@@ -64,7 +64,7 @@ const Timeline = React.forwardRef<HTMLOListElement, TimelineProps>(
             child.type.displayName === 'TimelineItem'
           ) {
             return React.cloneElement(child, {
-              iconsize,
+              iconSize,
               showConnector: index !== items.length - 1,
             } as React.ComponentProps<typeof TimelineItem>);
           }
@@ -89,7 +89,7 @@ interface TimelineItemProps extends Omit<HTMLMotionProps<'li'>, 'ref'> {
   /** Description text */
   description?: string;
   /** Custom icon element */
-  icon?: React.ReactNode;
+  icon?: React.ReactNode | React.ElementType;
   /** Color theme for the icon */
   iconColor?: TimelineColor;
   /** Current status of the item */
@@ -99,7 +99,7 @@ interface TimelineItemProps extends Omit<HTMLMotionProps<'li'>, 'ref'> {
   /** Whether to show the connector line */
   showConnector?: boolean;
   /** Size of the icon */
-  iconsize?: 'sm' | 'md' | 'lg';
+  iconSize?: 'sm' | 'md' | 'lg';
   /** Loading state */
   loading?: boolean;
   /** Error message */
@@ -118,7 +118,7 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
       status = 'completed',
       connectorColor,
       showConnector = true,
-      iconsize,
+      iconSize,
       loading,
       error,
       // Omit unused Framer Motion props
@@ -157,10 +157,19 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
             </div>
 
             <div className="mx-3 flex flex-col items-center justify-start gap-y-2">
-              <div className="relative flex h-8 w-8 animate-pulse items-center justify-center rounded-full bg-muted ring-8 ring-background">
-                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              <div className={cn("relative flex h-8 w-8 animate-pulse items-center justify-center rounded-full bg-muted ring-8 ring-background")}>
+                <TimelineIcon
+                  icon={LucideLoader as React.ElementType}
+                  iconSize={iconSize}
+                  status="in-progress"
+                />
               </div>
-              {showConnector && <div className={cn("h-full w-0.5 animate-pulse bg-muted", getConnectorColor(connectorColor))} />}
+              {showConnector && (
+                <TimelineConnector
+                  status="in-progress"
+                  className={cn("h-full w-0.5", getConnectorColor(connectorColor))}
+                />
+              )}
             </div>
 
             <div className="flex flex-col gap-2 pl-2">
@@ -192,7 +201,7 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
 
             <div className="mx-3 flex flex-col items-center justify-start gap-y-2">
               <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-destructive/20 ring-8 ring-background">
-                <AlertCircle className="h-4 w-4 text-destructive" />
+                {React.createElement(AlertCircle as React.ElementType, { className: "h-4 w-4 text-destructive" })}
               </div>
               {showConnector && <TimelineConnector status="pending" className="h-full" />}
             </div>
@@ -221,7 +230,7 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
         {/* Timeline dot and connector */}
         <div className="flex flex-col items-center">
           <div className="relative z-10">
-            <TimelineIcon icon={icon} color={iconColor} status={status} iconSize={iconsize} />
+            <TimelineIcon icon={icon} color={iconColor} status={status} iconSize={iconSize} />
           </div>
           {showConnector && (
             <div className="h-16 w-0.5 bg-border mt-2" />
@@ -374,7 +383,7 @@ const TimelineIcon = ({
   status = 'completed',
   iconSize = 'md',
 }: {
-  icon?: React.ReactNode;
+  icon?: React.ReactNode | React.ElementType;
   color?: 'primary' | 'secondary' | 'muted' | 'accent' | 'destructive';
   status?: 'completed' | 'in-progress' | 'pending' | 'error';
   iconSize?: 'sm' | 'md' | 'lg';
@@ -425,7 +434,11 @@ const TimelineIcon = ({
     >
       {icon ? (
         <div className={cn('flex items-center justify-center', iconSizeClasses[iconSize])}>
-          {icon}
+          {React.isValidElement(icon)
+            ? icon
+            : typeof icon === 'function'
+              ? React.createElement(icon, { className: cn(iconSizeClasses[iconSize]) })
+              : null}
         </div>
       ) : (
         <div className={cn('rounded-full', iconSizeClasses[iconSize])} />
