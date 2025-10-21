@@ -4,7 +4,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { motion, HTMLMotionProps } from 'framer-motion';
-import { AlertCircle, Loader2 as LucideLoader } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import type { TimelineColor } from '@/types';
 
 const timelineVariants = cva('flex flex-col relative', {
@@ -64,7 +64,7 @@ const Timeline = React.forwardRef<HTMLOListElement, TimelineProps>(
             child.type.displayName === 'TimelineItem'
           ) {
             return React.cloneElement(child, {
-              iconSize,
+              ...(iconSize !== undefined ? { iconSize } : {}),
               showConnector: index !== items.length - 1,
             } as React.ComponentProps<typeof TimelineItem>);
           }
@@ -136,10 +136,6 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
       'relative w-full mb-8 last:mb-0',
       className,
     );
-    const getConnectorColor = (connectorColor?: string) => {
-      if (connectorColor) return connectorColor;
-      return status === 'completed' ? 'primary' : status === 'in-progress' ? 'secondary' : 'muted';
-    }
     // Loading State
     if (loading) {
       return (
@@ -159,7 +155,7 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
             <div className="mx-3 flex flex-col items-center justify-start gap-y-2">
               <div className={cn("relative flex h-8 w-8 animate-pulse items-center justify-center rounded-full bg-muted ring-8 ring-background")}>
                 <TimelineIcon
-                  icon={LucideLoader as React.ElementType}
+                  icon={icon}
                   iconSize={iconSize}
                   status="in-progress"
                 />
@@ -167,7 +163,7 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
               {showConnector && (
                 <TimelineConnector
                   status="in-progress"
-                  className={cn("h-full w-0.5", getConnectorColor(connectorColor))}
+                  color={connectorColor === 'destructive' ? 'muted' : connectorColor}
                 />
               )}
             </div>
@@ -233,7 +229,11 @@ const TimelineItem = React.forwardRef<HTMLLIElement, TimelineItemProps>(
             <TimelineIcon icon={icon} color={iconColor} status={status} iconSize={iconSize} />
           </div>
           {showConnector && (
-            <div className="h-16 w-0.5 bg-border mt-2" />
+            <TimelineConnector
+              status={status}
+              color={connectorColor === 'destructive' ? 'muted' : connectorColor}
+              className={cn("h-16 w-0.5 mt-2")}
+            />
           )}
         </div>
 
@@ -299,32 +299,24 @@ const defaultDateFormat: Intl.DateTimeFormatOptions = {
 };
 
 const TimelineTime = React.forwardRef<HTMLTimeElement, TimelineTimeProps>(
-  ({ className, date, format, children, ...props }, ref) => {
-    const formattedDate = React.useMemo(() => {
-      if (!date) return '';
+  ({ className, date, format, ...props }, ref) => {
 
-      try {
-        const dateObj = new Date(date);
-        if (isNaN(dateObj.getTime())) return '';
+    let isValid = false;
+    let dateObj: Date | undefined;
+    if (date !== undefined) {
+      dateObj = new Date(date);
+      isValid = !isNaN(dateObj.getTime());
+    }
 
-        return new Intl.DateTimeFormat('en-US', {
-          ...defaultDateFormat,
-          ...format,
-        }).format(dateObj);
-      } catch (error) {
-        console.error('Error formatting date:', error);
-        return '';
-      }
-    }, [date, format]);
 
     return (
       <time
         ref={ref}
-        dateTime={date ? new Date(date).toISOString() : undefined}
         className={cn('text-sm font-medium tracking-tight text-muted-foreground', className)}
+        dateTime={isValid ? dateObj!.toISOString() : undefined}
         {...props}
       >
-        {children || formattedDate}
+        {isValid ? dateObj!.toLocaleDateString('en-US', format || defaultDateFormat) : 'Invalid Date'}
       </time>
     );
   },
@@ -426,6 +418,7 @@ const TimelineIcon = ({
 
   return (
     <div
+      data-testid="timeline-icon"
       className={cn(
         'relative flex items-center justify-center rounded-full ring-8 ring-background shadow-sm',
         sizeClasses[iconSize],

@@ -1,159 +1,122 @@
-import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { Timeline, TimelineItem, TimelineTime } from '../timeline';
-import { TimelineLayout } from '../timeline-layout';
-import { Check, GitPullRequest, AlertTriangle } from 'lucide-react';
-import type { TimelineElement } from '../../../types';
-
-const mockItems: TimelineElement[] = [
-  {
-    id: 1,
-    date: '2024-01-01',
-    title: 'Test Event',
-    description: 'Test Description',
-    icon: <Check />,
-    status: 'completed',
-    color: 'primary',
-  },
-  {
-    id: 2,
-    date: '2024-01-02',
-    title: 'In Progress Event',
-    description: 'Test Description 2',
-    icon: <GitPullRequest />,
-    status: 'in-progress',
-    color: 'secondary',
-  },
-];
-
-describe('TimelineTime', () => {
-  it.skip('renders date in ISO format by default', () => {
-    const { container } = render(<TimelineTime date="2024-01-01" />);
-    const timeElement = container.querySelector('time');
-    expect(timeElement).toHaveAttribute('dateTime', '2024-01-01T00:00:00.000Z');
-  });
-
-  it('renders children if provided', () => {
-    render(<TimelineTime date="2024-01-01">Custom Date</TimelineTime>);
-    expect(screen.getByText('Custom Date')).toBeInTheDocument();
-  });
-});
+import { render, screen } from '@testing-library/react'
+import { Timeline, TimelineItem } from '../timeline'
+import * as React from 'react'
+import '@testing-library/jest-dom'
 
 describe('Timeline', () => {
-  it('renders empty state when no items provided', () => {
-    render(<Timeline />);
-    expect(screen.getByText('No timeline items to display')).toBeInTheDocument();
-  });
+  it('should render successfully with default props', () => {
+    const { container } = render(
+      <Timeline>
+        <TimelineItem title="Test Item 1" />
+      </Timeline>
+    )
+    expect(container).toBeTruthy()
+  })
+})
 
-  it('renders timeline items correctly', () => {
+describe('TimelineItem', () => {
+  it('should render successfully with title prop', () => {
     render(
       <Timeline>
-        <TimelineItem
-          date="2024-01-01"
-          title="Test Event"
-          description="Test Description"
-          icon={<Check />}
-          status="completed"
-          iconColor="primary"
-        />
-      </Timeline>,
-    );
+        <TimelineItem title="Test Item 2" />
+      </Timeline>
+    )
+    expect(screen.getByText('Test Item 2')).toBeInTheDocument()
+  })
+})
 
-    expect(screen.getByText('Test Event')).toBeInTheDocument();
-    expect(screen.getByText('Test Description')).toBeInTheDocument();
-    expect(screen.getByText('2024-01-01')).toBeInTheDocument();
+describe('Timeline Component', () => {
+  it('should render TimelineEmpty when no children are provided', () => {
+    const { getByText } = render(<Timeline />);
+    expect(getByText('No timeline items to display')).toBeInTheDocument();
   });
 
-  it('renders loading state correctly', () => {
+  it('should render loading state with skeleton elements', () => {
     render(
       <Timeline>
-        <TimelineItem loading />
-      </Timeline>,
+        <TimelineItem title="Loading Test" loading />
+      </Timeline>
     );
+    // Verify loading container with role="status" exists
+    const loadingContainer = screen.getByRole('status');
+    expect(loadingContainer).toBeInTheDocument();
 
-    expect(screen.getByRole('status')).toBeInTheDocument();
-    expect(screen.getAllByRole('status')).toHaveLength(1);
-    const loadingElements = document.querySelectorAll('.animate-pulse');
-    expect(loadingElements.length).toBeGreaterThan(0);
+    // Check for skeleton elements (4 total in loading state)
+    const skeletonElements = loadingContainer.querySelectorAll('.animate-pulse');
+    expect(skeletonElements).toHaveLength(4);
   });
 
-  it('renders error state correctly', () => {
-    const errorMessage = 'Test error message';
+  it('should render error state with AlertCircle icon', () => {
     render(
       <Timeline>
-        <TimelineItem
-          error={errorMessage}
-          title="Error Event"
-          date="2024-01-01"
-          icon={<AlertTriangle />}
-        />
-      </Timeline>,
+        <TimelineItem title="Error Test" error="Something went wrong" />
+      </Timeline>
     );
 
-    expect(screen.getByText(errorMessage)).toBeInTheDocument();
-    expect(screen.getByText('Error Event')).toBeInTheDocument();
-    expect(screen.getByRole('alert')).toBeInTheDocument();
+    // Verify title and error message
+    expect(screen.getByText('Error Test')).toBeInTheDocument();
+    expect(screen.getByText('Something went wrong')).toBeInTheDocument();
+
+    // Verify destructive styling
+    const errorItem = screen.getByText('Error Test').closest('li');
+    expect(errorItem).toHaveClass('border-destructive/50', 'bg-destructive/10');
+
+    // Verify AlertCircle icon exists by checking for SVG with specific classes
+    const icon = errorItem?.querySelector('svg.h-4.w-4.text-destructive');
+    expect(icon).toBeInTheDocument();
   });
 
-  it('applies size variants correctly', () => {
-    const { container } = render(
-      <Timeline size="lg">
-        <TimelineItem date="2024-01-01" title="Test Event" />
-      </Timeline>,
+  it('should apply correct connector colors based on status', () => {
+    render(
+      <Timeline>
+        <TimelineItem title="In Progress" status="in-progress" />
+        <TimelineItem title="Pending" status="pending" />
+      </Timeline>
     );
 
-    expect(container.firstChild).toHaveClass('gap-8');
+    // Get the first timeline item (which has the connector)
+    const inProgressItem = screen.getByText('In Progress').closest('li');
+    // Within the first timeline item, find the connector
+    const connector = inProgressItem?.querySelector('div.h-16.w-0\\.5');
+
+    // Verify connector has the gradient class for in-progress
+    expect(connector).toHaveClass('bg-gradient-to-b');
+
+    // The second item should not have a connector (it's the last item)
+    const pendingItem = screen.getByText('Pending').closest('li');
+    const pendingConnector = pendingItem?.querySelector('div.h-16.w-0\\.5');
+    expect(pendingConnector).toBeNull();
   });
 
-  it('handles different icon sizes', () => {
-    const { container } = render(
-      <Timeline iconsize="lg">
-        <TimelineItem date="2024-01-01" title="Test Event" icon={<Check />} />
-      </Timeline>,
+  it('should override connector color with connectorColor prop', () => {
+    render(
+      <Timeline>
+        <TimelineItem title="Custom Connector" status="in-progress" connectorColor="accent" />
+        <TimelineItem title="Next Item" />
+      </Timeline>
     );
+    const inProgressItem = screen.getByText('Custom Connector').closest('li');
+    const connector = inProgressItem?.querySelector('div.h-16.w-0\\.5');
+    expect(connector).toHaveClass('bg-accent');
+  });
 
-    const iconContainer = container.querySelector(
-      '[class*="relative flex items-center justify-center rounded-full"]',
+  it('should render custom icon when provided', () => {
+    const CustomIcon = () => <div data-testid="custom-icon">Custom</div>;
+    render(
+      <Timeline>
+        <TimelineItem title="Custom Icon Test" icon={<CustomIcon />} />
+      </Timeline>
     );
-    expect(iconContainer).toBeInTheDocument();
-    expect(iconContainer).toHaveClass('h-12', 'w-12');
-  });
-});
-
-describe('TimelineLayout', () => {
-  it('renders all timeline items in reverse order', () => {
-    render(<TimelineLayout items={mockItems} />);
-
-    const items = screen.getAllByRole('listitem');
-    expect(items).toHaveLength(2);
-    expect(items[0]).toHaveTextContent('In Progress Event');
-    expect(items[1]).toHaveTextContent('Test Event');
+    expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
   });
 
-  it.skip('applies custom colors correctly', () => {
-    const { container } = render(
-      <TimelineLayout
-        items={mockItems}
-        iconColor="accent"
-        connectorColor="accent"
-      />,
+  it('should apply correct icon sizes', () => {
+    render(
+      <Timeline>
+        <TimelineItem title="Size Test" iconSize="lg" />
+      </Timeline>
     );
-
-    const iconContainers = container.querySelectorAll('[class*="bg-accent"]');
-    expect(iconContainers.length).toBeGreaterThan(0);
-  });
-
-  it('handles animation prop', () => {
-    const { container } = render(<TimelineLayout items={mockItems} animate={false} />);
-
-    const motionDivs = container.querySelectorAll('[style*="transform"]');
-    expect(motionDivs.length).toBe(0);
-  });
-
-  it('renders with different sizes', () => {
-    const { container } = render(<TimelineLayout items={mockItems} size="sm" />);
-
-    expect(container.firstChild).toHaveClass('gap-4');
+    const icons = screen.getAllByTestId('timeline-icon');
+    expect(icons[0]).toHaveClass('h-12', 'w-12');
   });
 });

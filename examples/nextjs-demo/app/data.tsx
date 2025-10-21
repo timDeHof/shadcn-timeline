@@ -1,4 +1,6 @@
-export const timelineData: Record<string, string | number>[] = [
+import { TimelineElement } from '@shadcn-timeline/core';
+
+export const timelineData: TimelineElement[] = [
   {
     id: 1,
     title: 'First event',

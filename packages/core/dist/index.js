@@ -73,7 +73,7 @@ var timelineVariants = (0, import_class_variance_authority.cva)("flex flex-col r
   }
 });
 var Timeline = React.forwardRef(
-  ({ className, iconsize, size, children, ...props }, ref) => {
+  ({ className, iconSize, size, children, ...props }, ref) => {
     const items = React.Children.toArray(children);
     if (items.length === 0) {
       return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimelineEmpty, {});
@@ -92,7 +92,7 @@ var Timeline = React.forwardRef(
         children: React.Children.map(children, (child, index) => {
           if (React.isValidElement(child) && typeof child.type !== "string" && "displayName" in child.type && child.type.displayName === "TimelineItem") {
             return React.cloneElement(child, {
-              iconsize,
+              ...iconSize !== void 0 ? { iconSize } : {},
               showConnector: index !== items.length - 1
             });
           }
@@ -114,7 +114,7 @@ var TimelineItem = React.forwardRef(
     status = "completed",
     connectorColor,
     showConnector = true,
-    iconsize,
+    iconSize,
     loading,
     error,
     // Omit unused Framer Motion props
@@ -130,10 +130,6 @@ var TimelineItem = React.forwardRef(
       "relative w-full mb-8 last:mb-0",
       className
     );
-    const getConnectorColor = (connectorColor2) => {
-      if (connectorColor2) return connectorColor2;
-      return status === "completed" ? "primary" : status === "in-progress" ? "secondary" : "muted";
-    };
     if (loading) {
       return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
         import_framer_motion.motion.li,
@@ -150,8 +146,8 @@ var TimelineItem = React.forwardRef(
               /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: cn("relative flex h-8 w-8 animate-pulse items-center justify-center rounded-full bg-muted ring-8 ring-background"), children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
                 TimelineIcon,
                 {
-                  icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_lucide_react.Loader2, { className: "h-4 w-4 animate-spin text-muted-foreground" }),
-                  iconSize: iconsize,
+                  icon,
+                  iconSize,
                   status: "in-progress"
                 }
               ) }),
@@ -159,7 +155,7 @@ var TimelineItem = React.forwardRef(
                 TimelineConnector,
                 {
                   status: "in-progress",
-                  className: cn("h-full w-0.5", getConnectorColor(connectorColor))
+                  color: connectorColor === "destructive" ? "muted" : connectorColor
                 }
               )
             ] }),
@@ -184,7 +180,7 @@ var TimelineItem = React.forwardRef(
           children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "grid grid-cols-[minmax(auto,8rem)_auto_1fr] items-start px-4", children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "pr-4 text-right", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimelineTime, { className: "text-destructive", children: date }) }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "mx-3 flex flex-col items-center justify-start gap-y-2", children: [
-              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "relative flex h-8 w-8 items-center justify-center rounded-full bg-destructive/20 ring-8 ring-background", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_lucide_react.AlertCircle, { className: "h-4 w-4 text-destructive" }) }),
+              /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "relative flex h-8 w-8 items-center justify-center rounded-full bg-destructive/20 ring-8 ring-background", children: React.createElement(import_lucide_react.AlertCircle, { className: "h-4 w-4 text-destructive" }) }),
               showConnector && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimelineConnector, { status: "pending", className: "h-full" })
             ] }),
             /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col gap-2 pl-2", children: [
@@ -203,8 +199,15 @@ var TimelineItem = React.forwardRef(
         children: [
           /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex flex-col justify-start pt-1", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimelineTime, { className: "text-right pr-4", children: date }) }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { className: "flex flex-col items-center", children: [
-            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "relative z-10", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimelineIcon, { icon, color: iconColor, status, iconSize: iconsize }) }),
-            showConnector && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-16 w-0.5 bg-border mt-2" })
+            /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "relative z-10", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimelineIcon, { icon, color: iconColor, status, iconSize }) }),
+            showConnector && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+              TimelineConnector,
+              {
+                status,
+                color: connectorColor === "destructive" ? "muted" : connectorColor,
+                className: cn("h-16 w-0.5 mt-2")
+              }
+            )
           ] }),
           /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(TimelineContent, { children: [
             /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimelineHeader, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimelineTitle, { children: title }) }),
@@ -250,29 +253,21 @@ var defaultDateFormat = {
   day: "2-digit"
 };
 var TimelineTime = React.forwardRef(
-  ({ className, date, format, children, ...props }, ref) => {
-    const formattedDate = React.useMemo(() => {
-      if (!date) return "";
-      try {
-        const dateObj = new Date(date);
-        if (isNaN(dateObj.getTime())) return "";
-        return new Intl.DateTimeFormat("en-US", {
-          ...defaultDateFormat,
-          ...format
-        }).format(dateObj);
-      } catch (error) {
-        console.error("Error formatting date:", error);
-        return "";
-      }
-    }, [date, format]);
+  ({ className, date, format, ...props }, ref) => {
+    let isValid = false;
+    let dateObj;
+    if (date !== void 0) {
+      dateObj = new Date(date);
+      isValid = !isNaN(dateObj.getTime());
+    }
     return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
       "time",
       {
         ref,
-        dateTime: date ? new Date(date).toISOString() : void 0,
         className: cn("text-sm font-medium tracking-tight text-muted-foreground", className),
+        dateTime: isValid ? dateObj.toISOString() : void 0,
         ...props,
-        children: children || formattedDate
+        children: isValid ? dateObj.toLocaleDateString("en-US", format || defaultDateFormat) : "Invalid Date"
       }
     );
   }
@@ -351,12 +346,13 @@ var TimelineIcon = ({
   return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
     "div",
     {
+      "data-testid": "timeline-icon",
       className: cn(
         "relative flex items-center justify-center rounded-full ring-8 ring-background shadow-sm",
         sizeClasses[iconSize],
         status ? getStatusColor(status) : colorClasses[color]
       ),
-      children: icon ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: cn("flex items-center justify-center", iconSizeClasses[iconSize]), children: icon }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: cn("rounded-full", iconSizeClasses[iconSize]) })
+      children: icon ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: cn("flex items-center justify-center", iconSizeClasses[iconSize]), children: React.isValidElement(icon) ? icon : typeof icon === "function" ? React.createElement(icon, { className: cn(iconSizeClasses[iconSize]) }) : null }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: cn("rounded-full", iconSizeClasses[iconSize]) })
     }
   );
 };
